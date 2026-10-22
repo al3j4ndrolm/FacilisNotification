@@ -115,7 +115,7 @@ dependencyResolutionManagement {
 Then (min SDK 26):
 
 ```kotlin
-implementation("com.github.al3j4ndrolm.FacilisNotification:notification:1.0.0")
+implementation("com.github.al3j4ndrolm:FacilisNotification:1.0.0")
 ```
 
 No manifest changes: the notification permission, receivers and reboot handling are merged in for you.
