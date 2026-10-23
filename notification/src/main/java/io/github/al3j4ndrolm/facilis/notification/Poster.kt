@@ -80,6 +80,31 @@ internal object Poster {
         }
     }
 
+    /**
+     * A scheduled notification may show while the app is in the background, where nothing can ask
+     * for the permission. So ask now, once, while a screen is up. Scheduling goes ahead either way.
+     */
+    fun askBeforeScheduling(context: Context) {
+        val enabled = NotificationManagerCompat.from(context).areNotificationsEnabled()
+        val ask = shouldAskWhenScheduling(
+            autoRequest = FacilisNotification.autoRequestPermission,
+            alreadyAsked = askedForPermission,
+            sdk = Build.VERSION.SDK_INT,
+            enabled = enabled,
+            onScreen = Tracker.resumed != null,
+        )
+        if (!ask) {
+            if (!enabled) warn("Notifications are turned off for this app, so scheduled ones won't show. See notify.requestPermission().")
+            return
+        }
+        askedForPermission = true
+        mainHandler.post {
+            permissions.request(Permission.Notifications) { granted ->
+                if (!granted) warn("Notification permission denied, so scheduled notifications won't show.")
+            }
+        }
+    }
+
     /** Asks for the Android 13+ permission the first time a notification can't be shown. */
     private fun askOnceThen(context: Context, then: (Boolean) -> Unit) {
         if (!FacilisNotification.autoRequestPermission || askedForPermission || Build.VERSION.SDK_INT < 33) {
@@ -229,6 +254,15 @@ internal object Poster {
     const val EVENT_TAP = "tap"
     const val EVENT_ACTION = "action"
 }
+
+/** Whether scheduling should ask for the permission now (unit tested). */
+internal fun shouldAskWhenScheduling(
+    autoRequest: Boolean,
+    alreadyAsked: Boolean,
+    sdk: Int,
+    enabled: Boolean,
+    onScreen: Boolean,
+): Boolean = autoRequest && !alreadyAsked && sdk >= 33 && !enabled && onScreen
 
 internal fun warn(message: String, error: Throwable? = null) {
     try {

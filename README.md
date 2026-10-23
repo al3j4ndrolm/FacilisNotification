@@ -111,7 +111,7 @@ dependencyResolutionManagement {
 Then (min SDK 26):
 
 ```kotlin
-implementation("com.github.al3j4ndrolm:FacilisNotification:1.0.0")
+implementation("com.github.al3j4ndrolm:FacilisNotification:1.0.1")
 ```
 
 No manifest changes: the notification permission, receivers and reboot handling are merged in for you.
@@ -120,7 +120,7 @@ No manifest changes: the notification permission, receivers and reboot handling 
 
 - **Timing:** scheduled notifications show within about 10 minutes of their time, with no special permission. Pass `exact = true` for to-the-second timing; that needs the `SCHEDULE_EXACT_ALARM` permission, which Google Play only allows for alarm and calendar apps.
 - **Replies:** after the user replies from a notification, Android keeps it on screen. FacilisNotification updates it to show the reply, without buttons, until the user swipes it away.
-- **Permission:** if the user denies notifications, they're skipped (with a log warning). `notify.enabled` tells you, and `notify.requestPermission()` asks again.
+- **Permission:** on Android 13+ it's asked for once, the first time you show or schedule a notification. Scheduling asks right away (if a screen is up), since the notification may show later while your app is in the background, where nothing can ask. If the user denies, notifications are skipped (with a log warning). `notify.enabled` tells you, and `notify.requestPermission()` asks again.
 - **Not included:** push notifications from a server (Firebase Cloud Messaging).
 
 ## Contributing

@@ -2,6 +2,7 @@ package io.github.al3j4ndrolm.facilis.notification
 
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
@@ -153,6 +154,33 @@ class NotificationLogicTest {
         assertThrows(IllegalArgumentException::class.java) {
             Spec(title = "x", data = mapOf("big" to "x".repeat(MAX_DATA_CHARS + 1))).validate()
         }
+    }
+
+    // endregion
+
+    // region Permission when scheduling
+
+    private fun ask(
+        autoRequest: Boolean = true,
+        alreadyAsked: Boolean = false,
+        sdk: Int = 34,
+        enabled: Boolean = false,
+        onScreen: Boolean = true,
+    ) = shouldAskWhenScheduling(autoRequest, alreadyAsked, sdk, enabled, onScreen)
+
+    @Test
+    fun schedulingAsksWhenNotificationsAreOffAndAScreenIsUp() {
+        assertTrue(ask())
+        assertTrue(ask(sdk = 33))
+    }
+
+    @Test
+    fun schedulingDoesNotAskWhenItShouldnt() {
+        assertFalse(ask(enabled = true))
+        assertFalse(ask(onScreen = false))
+        assertFalse(ask(alreadyAsked = true))
+        assertFalse(ask(autoRequest = false))
+        assertFalse(ask(sdk = 32))
     }
 
     // endregion

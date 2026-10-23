@@ -28,7 +28,10 @@ val notify: FacilisNotification get() = FacilisNotification
 
 object FacilisNotification {
 
-    /** Ask for the Android 13+ permission automatically the first time a notification can't be shown. */
+    /**
+     * Ask for the Android 13+ permission automatically, once: when a notification is scheduled
+     * (if a screen is up), or the first time one can't be shown.
+     */
     @JvmStatic
     var autoRequestPermission: Boolean = true
 
@@ -212,6 +215,7 @@ object FacilisNotification {
         val scheduleKey = key ?: "auto-${UUID.randomUUID()}"
         val spec = Spec(title, text, data, actions, channel, key = scheduleKey).validate()
         Scheduler.schedule(Tracker.appContext, scheduleKey, spec, rule, exact)
+        Poster.askBeforeScheduling(Tracker.appContext)
         return ScheduledNotification(scheduleKey)
     }
 
