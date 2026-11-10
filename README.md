@@ -6,10 +6,6 @@
 
 **Android notifications in one line.** No channels, no `PendingIntent`s, no receivers, no AlarmManager.
 
-<p align="center">
-  <img src="docs/social-preview.png" alt="FacilisNotification: Android notifications in one line" width="640">
-</p>
-
 Part of the Facilis family, with [FacilisCam](https://github.com/al3j4ndrolm/FacilisCam), [FacilisStorage](https://github.com/al3j4ndrolm/FacilisStorage) and [FacilisPermission](https://github.com/al3j4ndrolm/FacilisPermission).
 
 ```kotlin
